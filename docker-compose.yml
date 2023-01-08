@@ -1,0 +1,29 @@
+version: "2"
+services:
+  app:
+    build: ./app
+    depends_on:
+      - mysqldb
+      - mongodb
+    ports:
+      - "9000:9000"
+
+  mysqldb:
+    image: mysql:5.7
+    ports:
+      - "32000:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d/:ro
+  mongodb:
+    image: mongo:latest
+    hostname: test_mongodb
+    environment:
+      - MONGO_INITDB_DATABASE=movie_db
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    volumes:
+      - ./init-db.js:/docker-entrypoint-initdb.d/init-db.js:ro
+    ports:
+      - 27017:27017
